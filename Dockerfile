@@ -17,7 +17,7 @@ ENV PATH "${PATH}:${ANDROID_HOME}/bin"
 
 RUN dpkg --add-architecture i386 && \
     apt-get update -yqq && \
-    apt-get install -y curl expect git libc6:i386 libgcc1:i386 libncurses5:i386 libstdc++6:i386 zlib1g:i386 openjdk-11-jdk wget unzip vim && \
+    apt-get install -y curl expect git libc6:i386 libgcc1:i386 libncurses5:i386 libstdc++6:i386 zlib1g:i386 wget unzip vim python3 g++ openjdk-17-jdk-headless && \
     apt-get clean
 
 RUN groupadd android && useradd -d /opt/android-sdk-linux -g android android
@@ -34,5 +34,10 @@ RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "build-tools;32.0.
 RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "platform-tools"
 RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "platforms;android-31"
 RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "system-images;android-31;google_apis;x86_64"
+RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager 'cmake;3.18.1'
+RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager 'ndk;24.0.8215888'
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+RUN echo 'root:root' | chpasswd
 
 CMD /opt/tools/entrypoint.sh built-in
