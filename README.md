@@ -6,7 +6,7 @@ Docker for Android SDK 34 with preinstalled build tools and emulator image
 
 **Installed Packages**
 ```bash
-# sdkmanager --list
+# sdkmanager --list-installed
 Installed packages:
   Path                                    | Version       | Description                             | Location                               
   -------                                 | -------       | -------                                 | -------                                
