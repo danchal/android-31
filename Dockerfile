@@ -36,7 +36,7 @@ RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "platform-tools"
 RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "platforms;android-28"
 RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "system-images;android-28;default;x86_64"
 RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager 'cmake;3.22.1'
-RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager 'ndk;26.1.10909125'
+RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager 'ndk;26.3.11579264'
 RUN /opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "emulator"
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
