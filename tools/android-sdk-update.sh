@@ -1,65 +1,27 @@
 #!/bin/bash
 
-mkdir -p /opt/android-sdk-linux/bin/
-cp /opt/tools/android-env.sh /opt/android-sdk-linux/bin/
-source /opt/android-sdk-linux/bin/android-env.sh
+echo "Bootstrapping SDK-Tools"
+wget -q https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip -O commandlinetools-linux.zip
+unzip commandlinetools-linux.zip
+mkdir cmdline-tools
+mv tools cmdline-tools/
+rm commandlinetools-linux.zip
 
-built_in_sdk=1
-
-
-echo $#
-
-echo $1
-
-if [ $# -ge 0 ] && [ "$1" == "lazy-dl" ]
-then
-    echo "Using Lazy Download Flavour"
-    built_in_sdk=0
-elif [ $# -ge 0 ] && [ "$1" == "built-in" ]
-then
-    echo "Using Built-In SDK Flavour"
-    built_in_sdk=1
-else
-    echo "Please use either built-in or lazy-dl as parameter"
-    exit 1
-fi
-
-cd ${ANDROID_HOME}
-echo "Set ANDROID_HOME to ${ANDROID_HOME}"
-
-if [ -f commandlinetools-linux.zip ]
-then
-  echo "SDK Tools already bootstrapped. Skipping initial setup"
-else
-  echo "Bootstrapping SDK-Tools"
-  wget -q https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip -O commandlinetools-linux.zip
-  unzip commandlinetools-linux.zip
-  mkdir cmdline-tools
-  mv tools cmdline-tools/
-  rm commandlinetools-linux.zip
-fi
-
-echo "Make sure repositories.cfg exists"
-mkdir -p ~/.android/
-touch ~/.android/repositories.cfg
-
-echo "Copying Licences"
-cp -rv /opt/licenses ${ANDROID_HOME}/licenses
-
-echo "Copying Tools"
-mkdir -p ${ANDROID_HOME}/bin
-cp -v /opt/tools/*.sh ${ANDROID_HOME}/bin
-
-echo "Installing packages"
-if [ $built_in_sdk -eq 1 ]
-then
-    android-accept-licenses.sh "sdkmanager --package_file=/opt/tools/package-list-minimal.txt --verbose"
-else
-    android-accept-licenses.sh "sdkmanager --package_file=/opt/tools/package-list.txt --verbose"
-fi
+echo "Update packages lists"
+/opt/tools/android-accept-licenses.sh "sdkmanager --package_file=/opt/tools/package-list.txt --verbose"
 
 echo "Updating SDK"
-update_sdk
+/opt/tools/android-accept-licenses.sh "sdkmanager --update"
 
 echo "Accepting Licenses"
-android-accept-licenses.sh "sdkmanager --licenses --verbose"
+/opt/tools/android-accept-licenses.sh "sdkmanager --licenses --verbose"
+
+echo "Installing packages"
+/opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "cmdline-tools;latest"
+/opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "build-tools;34.0.0"
+/opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "platform-tools"
+/opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "platforms;android-28"
+/opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "system-images;android-28;default;x86_64"
+/opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager 'cmake;3.22.1'
+/opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager 'ndk;26.3.11579264'
+/opt/android-sdk-linux/cmdline-tools/tools/bin/sdkmanager "emulator"
